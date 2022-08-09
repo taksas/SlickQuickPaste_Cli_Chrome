@@ -1,4 +1,37 @@
+*{
+    margin:0;
+    padding:0;
+}
+
 body {
+    background-color: #a9a9a9;
+    text-align: center;
     width: 300px;
-    height: 300px;
+    height: 280px;
+    border-radius: 400px;
   }
+
+div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+.txt {
+    width: 80%;
+    height: 40%;
+}
+
+.status {
+    color: #008b8b;
+}
+
+#entercode {
+    display: none;
+}
+
+.codeform {
+    width: 30px;
+}

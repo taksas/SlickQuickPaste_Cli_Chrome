@@ -1,12 +1,29 @@
 document.getElementById("btnnew").addEventListener("click", async () => {
+    document.getElementById("code1").textContent = "123";
+    document.getElementById("code2").textContent = "456";
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     chrome.scripting.executeScript({
       target: { tabId: tab.id },
       function: onRun,
     });
   });
+
+
+  document.getElementById("btnadd").addEventListener("click", async () => {
+    document.getElementById("entercode").style.display = 'flex';
+  });
+
+
+
+
+
+
+
+
+
   
   function onRun() {
+    
     const data = 
       {
         "email": "test7@example.com",

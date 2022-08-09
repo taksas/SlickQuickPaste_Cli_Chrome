@@ -8,3 +8,10 @@ chrome.action.onClicked.addListener((tab) => {
       files: ['popup.js']
     });
   });
+
+
+
+
+
+
+

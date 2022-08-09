@@ -1,0 +1,10 @@
+{
+    "name": "SlickQuickPaste_Cli_Chrome",
+    "description": "SlickQuickPaste Client for Google Chrome",
+    "version": "1.0",
+    "manifest_version": 3,
+    "permissions": ["activeTab", "scripting"],
+    "action": {
+      "default_popup": "popup.html"
+    }
+  }

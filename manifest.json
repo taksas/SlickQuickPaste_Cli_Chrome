@@ -3,7 +3,11 @@
     "description": "SlickQuickPaste Client for Google Chrome",
     "version": "1.0",
     "manifest_version": 3,
+    "host_permissions": ["*://*/*"],
     "permissions": ["activeTab", "scripting", "storage"],
+    "background": {
+        "service_worker": "background.js"
+      },
     "action": {
       "default_popup": "popup.html"
     }

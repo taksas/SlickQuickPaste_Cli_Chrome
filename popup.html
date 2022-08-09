@@ -10,9 +10,9 @@
 
         <h1>SlickQuickPaste</h1>
         
-        <div><h2>現在の同期コード：　</h2><h2 id="code1">???</h2> <p>　ー　</p> <h2 id="code2">???</h2></div>
+        <div><h2>現在の同期コード：　</h2><h2 id="code1">未</h2> <p>　ー　</p> <h2 id="code2">取得</h2></div>
         <div><button id="btnnew">同期コード新規取得</button> <p>　</p> <button id="btnadd">同期コード入力</button></div>
-        <div id="entercode"><p>コード：　</p> <input class="codeform" minlength="3" maxlength="3"></input> <p>　ー　</p> <input class="codeform" minlength="3" maxlength="3"></input> <p>　</p> <button id="codeok">コード確定</button></div>
+        <div id="entercode"><p>コード：　</p> <input class="codeform" minlength="3" maxlength="3"></input> <p>　ー　</p> <input class="codeform" minlength="3" maxlength="3"></input> <p>　</p> <button id="codeok">コード保存</button></div>
 
         <br></br>
 
@@ -20,7 +20,9 @@
         <textarea id="txt"></textarea>
         <button id="copybtn">クリップボードへコピー</button>
 
+        <input type="text" id="counter" />
 
+        <script src="jquery-3.6.0.min.js"></script>
         <script src="popup.js"></script>
     </body>
   </html>

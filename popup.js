@@ -1,3 +1,12 @@
+// 拡張機能がインストールされたときの処理
+chrome.runtime.onInstalled.addListener(function(){
+  });
+
+
+
+chrome.storage.sync.get(['value'], function (value){document.getElementById("counter").value = JSON.stringify(value.value).replace('"', '').replace('"', '');});
+
+
 document.getElementById("btnnew").addEventListener("click", async () => {
     document.getElementById("code1").textContent = "123";
     document.getElementById("code2").textContent = "456";
@@ -9,10 +18,13 @@ document.getElementById("btnnew").addEventListener("click", async () => {
   });
 
 
+
   document.getElementById("btnadd").addEventListener("click", async () => {
     document.getElementById("entercode").style.display = 'flex';
   });
 
+
+  
   document.getElementById("copybtn").addEventListener("click", async () => {
     // コピー対象をJavaScript上で変数として定義する
     var copyTarget = document.getElementById("txt");

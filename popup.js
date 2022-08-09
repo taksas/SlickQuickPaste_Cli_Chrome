@@ -13,7 +13,14 @@ document.getElementById("btnnew").addEventListener("click", async () => {
     document.getElementById("entercode").style.display = 'flex';
   });
 
-
+  document.getElementById("copybtn").addEventListener("click", async () => {
+    // コピー対象をJavaScript上で変数として定義する
+    var copyTarget = document.getElementById("txt");
+    // コピー対象のテキストを選択する
+    copyTarget.select();
+    // 選択しているテキストをクリップボードにコピーする
+    document.execCommand("Copy");
+  });
 
 
 

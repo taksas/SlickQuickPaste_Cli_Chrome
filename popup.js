@@ -5,7 +5,7 @@ chrome.runtime.onInstalled.addListener(function(){
   });
 
 
-var S="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+var S="abcdefghijklmnopqrstuvwxyz0123456789"
 chrome.storage.sync.get(['code1'], function (value){document.getElementById("code1").textContent = JSON.stringify(value.code1).replace('"', '').replace('"', '');});
 chrome.storage.sync.get(['code2'], function (value){document.getElementById("code2").textContent = JSON.stringify(value.code2).replace('"', '').replace('"', '');});
 
@@ -21,13 +21,9 @@ chrome.storage.sync.get(['status'], function (value){
 });
 
 chrome.storage.sync.get(['clipboard'], function (value){ 
-    if (JSON.stringify(value.clipboard).replace('"', '').replace('"', '')) {
-        document.getElementById("sync_status").textContent = JSON.stringify(value.clipboard).replace('"', '').replace('"', '');
-    }
+    document.getElementById("txt").textContent = JSON.stringify(value.clipboard).replace('"', '').replace('"', '');
 
 });
-
-
 
 
 

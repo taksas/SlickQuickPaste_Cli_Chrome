@@ -1,8 +1,4 @@
-// 拡張機能がインストールされたときの処理
-chrome.runtime.onInstalled.addListener(function(){
-    chrome.storage.sync.set({'code1': "未"}, function(){});
-    chrome.storage.sync.set({'code2': "取得"}, function(){});
-  });
+
 
 
 var S="abcdefghijklmnopqrstuvwxyz0123456789"
@@ -62,12 +58,10 @@ document.getElementById("btnnew").addEventListener("click", async () => {
         var access_token = response.headers.get('access-token');
         var client = response.headers.get('client');
         var expiry = response.headers.get('expiry');
-        chrome.storage.sync.set({'access_token': access_token}, function(){});
-        chrome.storage.sync.set({'client': client}, function(){});
-        chrome.storage.sync.set({'expiry': expiry}, function(){});
         document.getElementById("sync_status").textContent = "新規取得成功";
         document.getElementById("sync_status").style.color = "#008b8b";
         chrome.storage.sync.set({'status': "OK"}, function(){});
+        document.getElementById("txt").textContent = "Welcome to SlickQuickPaste!";
       })
     .then(data => {
       console.log('Success:', data);
@@ -140,12 +134,10 @@ document.getElementById("btnnew").addEventListener("click", async () => {
         var access_token = response.headers.get('access-token');
         var client = response.headers.get('client');
         var expiry = response.headers.get('expiry');
-        chrome.storage.sync.set({'access_token': access_token}, function(){});
-        chrome.storage.sync.set({'client': client}, function(){});
-        chrome.storage.sync.set({'expiry': expiry}, function(){});
         document.getElementById("sync_status").textContent = "コード保存成功";
         document.getElementById("sync_status").style.color = "#008b8b";
         chrome.storage.sync.set({'status': "OK"}, function(){});
+        document.getElementById("txt").textContent = "クラウドと同期中です。数秒後再度SlickQuickPasteを開いてください。";
       })
     .then(data => {
       console.log('Success:', data);

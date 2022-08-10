@@ -64,7 +64,7 @@ document.getElementById("btnnew").addEventListener("click", async () => {
         var expiry = response.headers.get('expiry');
         chrome.storage.sync.set({'access_token': access_token}, function(){});
         chrome.storage.sync.set({'client': client}, function(){});
-        chrome.storage.sync.set({'client': expiry}, function(){});
+        chrome.storage.sync.set({'expiry': expiry}, function(){});
         document.getElementById("sync_status").textContent = "新規取得成功";
         document.getElementById("sync_status").style.color = "#008b8b";
         chrome.storage.sync.set({'status': "OK"}, function(){});
@@ -142,7 +142,7 @@ document.getElementById("btnnew").addEventListener("click", async () => {
         var expiry = response.headers.get('expiry');
         chrome.storage.sync.set({'access_token': access_token}, function(){});
         chrome.storage.sync.set({'client': client}, function(){});
-        chrome.storage.sync.set({'client': expiry}, function(){});
+        chrome.storage.sync.set({'expiry': expiry}, function(){});
         document.getElementById("sync_status").textContent = "コード保存成功";
         document.getElementById("sync_status").style.color = "#008b8b";
         chrome.storage.sync.set({'status': "OK"}, function(){});

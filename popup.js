@@ -1,4 +1,4 @@
-
+syncGet();
 
 
 var S="abcdefghijklmnopqrstuvwxyz0123456789"
@@ -20,6 +20,30 @@ chrome.storage.sync.get(['clipboard'], function (value){
     document.getElementById("txt").textContent = JSON.stringify(value.clipboard).replace('"', '').replace('"', '');
 
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -62,6 +86,7 @@ document.getElementById("btnnew").addEventListener("click", async () => {
         document.getElementById("sync_status").style.color = "#008b8b";
         chrome.storage.sync.set({'status': "OK"}, function(){});
         document.getElementById("txt").textContent = "Welcome to SlickQuickPaste!";
+        syncGet();
       })
     .then(data => {
       console.log('Success:', data);
@@ -138,6 +163,7 @@ document.getElementById("btnnew").addEventListener("click", async () => {
         document.getElementById("sync_status").style.color = "#008b8b";
         chrome.storage.sync.set({'status': "OK"}, function(){});
         document.getElementById("txt").textContent = "クラウドと同期中です。数秒後再度SlickQuickPasteを開いてください。";
+        syncGet();
       })
     .then(data => {
       console.log('Success:', data);
@@ -168,3 +194,193 @@ document.getElementById("btnnew").addEventListener("click", async () => {
 
 
   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+async function syncGet() {
+
+  chrome.storage.sync.get(['code1'], function (value){
+      var code1 = JSON.stringify(value.code1).replace('"', '').replace('"', '');
+      chrome.storage.sync.get(['code2'], function (value){
+          var code2 = JSON.stringify(value.code2).replace('"', '').replace('"', '');
+
+
+          // sign_in
+          const data = 
+          {
+          "email": "easy_access@" + code1 + code2 +".com",
+          "password": "password"
+          };
+
+          fetch('http://127.0.0.1:3000/v1/auth/sign_in', {
+          method: 'POST',
+          headers: {
+          'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+          })
+          .then(response => {
+          if(response.status!==200)
+          {
+              throw new Error(response.status)
+          }
+              var access_token = response.headers.get('access-token');
+              var client = response.headers.get('client');
+              var expiry = response.headers.get('expiry');
+
+
+              fetch('http://127.0.0.1:3000/v1/users/get', {
+                          method: 'GET',
+                          headers: {
+                          'Accept': 'application/json',
+                          'Content-Type': 'application/json',
+                          'access-token': access_token,
+                          'uid': "easy_access@" + code1 + code2 +".com",
+                          'client': client,
+                          'expiry': expiry,
+                          'token-type': 'Bearer',
+                          }
+                          })
+                          .then(response => {
+                              response.json().then(data => {
+                                  var clipboard = data.clipboard.text;
+                                  chrome.storage.sync.set({'clipboard': clipboard}, function(){});
+                              })
+                              chrome.storage.sync.set({'status': "OK"}, function(){});
+                          })
+                          .then(data => {
+                              console.log('Success:', data);
+                          })
+                          
+                          .catch((error) => {
+                          
+                          });
+
+
+          })
+          .then(data => {
+          console.log('Success:', data);
+          })
+          .catch((error) => {
+          chrome.storage.sync.set({'status': "NG"}, function(){});
+          });
+          
+          
+
+      });
+  });
+/*    const _sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  await _sleep(7000);
+  sync();
+*/
+}
+
+
+
+
+
+async function syncPost(send_text) {
+
+chrome.storage.sync.get(['code1'], function (value){
+    var code1 = JSON.stringify(value.code1).replace('"', '').replace('"', '');
+    chrome.storage.sync.get(['code2'], function (value){
+        var code2 = JSON.stringify(value.code2).replace('"', '').replace('"', '');
+
+
+        // sign_in
+        const data = 
+        {
+        "email": "easy_access@" + code1 + code2 +".com",
+        "password": "password"
+        };
+        const data2 = 
+        {
+          "insert_text": send_text
+        }
+
+        fetch('http://127.0.0.1:3000/v1/auth/sign_in', {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+        })
+        .then(response => {
+        if(response.status!==200)
+        {
+            throw new Error(response.status)
+        }
+            var access_token = response.headers.get('access-token');
+            var client = response.headers.get('client');
+            var expiry = response.headers.get('expiry');
+
+
+            fetch('http://127.0.0.1:3000/v1/users/edit', {
+                        method: 'POST',
+                        headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'access-token': access_token,
+                        'uid': "easy_access@" + code1 + code2 +".com",
+                        'client': client,
+                        'expiry': expiry,
+                        'token-type': 'Bearer',
+                        },
+                        body: JSON.stringify(data2),
+                        })
+                        .then(response => {
+                            response.json().then(data => {
+                                var clipboard = data.clipboard.text;
+                                chrome.storage.sync.set({'clipboard': clipboard}, function(){});
+                            })
+                            chrome.storage.sync.set({'status': "OK"}, function(){});
+                        })
+                        .then(data => {
+                            console.log('Success:', data);
+                        })
+                        
+                        .catch((error) => {
+                        
+                        });
+
+
+        })
+        .then(data => {
+        console.log('Success:', data);
+        })
+        .catch((error) => {
+        chrome.storage.sync.set({'status': "NG"}, function(){});
+        });
+        
+        
+
+    });
+});
+/*    const _sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+await _sleep(7000);
+sync();
+*/
+}

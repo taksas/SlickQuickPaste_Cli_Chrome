@@ -9,7 +9,8 @@ chrome.runtime.onInstalled.addListener(function(){
   const parent = chrome.contextMenus.create({
     type: "normal",
     id: "parent",
-    title: "SlickClickPasteでクラウドデータと同期"
+    title: "SlickClickPasteでクラウドデータと同期",
+    contexts: ["all"]
   });
 
   //子メニューを追加（１つ目）
@@ -17,14 +18,54 @@ chrome.runtime.onInstalled.addListener(function(){
     type: "normal",
     id: "child1",
     parentId: "parent",
-    title: "クリップボードのデータをクラウドへアップロード"
+    title: "クリップボードのデータをクラウドへアップロード",
+    contexts: ["page"]
   });
   //子メニューを追加（２つ目）
   const child2 = chrome.contextMenus.create({
     type: "normal",
     id: "child2",
     parentId: "parent",
-    title: "クラウドのデータをクリップボードにダウンロード"
+    title: "クラウドのデータをクリップボードにダウンロード",
+    contexts: ["page"]
+  });
+
+  //子メニューを追加（１aつ目）
+  const child1a = chrome.contextMenus.create({
+    type: "normal",
+    id: "child1a",
+    parentId: "parent",
+    title: "クラウドにコピー",
+    contexts: ["selection"]
+  });
+
+  //子メニューを追加（２aつ目）
+  const child2a = chrome.contextMenus.create({
+    type: "normal",
+    id: "child2a",
+    parentId: "parent",
+    title: "クラウドのデータを貼り付け",
+    contexts: ["selection"]
+  });
+
+  //子メニューを追加（３つ目）
+  const child3 = chrome.contextMenus.create({
+    type: "separator",
+    id: "child3",
+    parentId: "parent",
+    contexts: ["all"]
+  });
+
+
+
+
+  //子メニューを追加（４つ目）
+  const child4 = chrome.contextMenus.create({
+    type: "checkbox",
+    id: "child4",
+    parentId: "parent",
+    title: "クラウドのデータ変更時、クリップボードに自動ダウンロード",
+    contexts: ["all"]
   });
 
   

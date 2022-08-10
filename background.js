@@ -2,82 +2,66 @@
 chrome.runtime.onInstalled.addListener(function(){
     chrome.storage.sync.set({'code1': "未"}, function(){});
     chrome.storage.sync.set({'code2': "取得"}, function(){});
+    chrome.storage.sync.set({'clipboard': "Slick Quick Pasteへようこそ！　　　　　　　　　　　　　　　　同期の為に必要な「同期コード」を新規取得するか、他の端末で使用しているコードを入力してください。"}, function(){});
 
 
 
-    //親メニューの追加
-  const parent = chrome.contextMenus.create({
-    type: "normal",
-    id: "parent",
-    title: "SlickClickPasteでクラウドデータと同期",
-    contexts: ["all"]
-  });
 
-  //子メニューを追加（１つ目）
-  const child1 = chrome.contextMenus.create({
-    type: "normal",
-    id: "child1",
-    parentId: "parent",
-    title: "クリップボードのデータをクラウドへアップロード",
-    contexts: ["page"]
-  });
-  //子メニューを追加（２つ目）
-  const child2 = chrome.contextMenus.create({
-    type: "normal",
-    id: "child2",
-    parentId: "parent",
-    title: "クラウドのデータをクリップボードにダウンロード",
-    contexts: ["page"]
-  });
 
-  //子メニューを追加（１aつ目）
+
+  //メニューを追加（１aつ目）
   const child1a = chrome.contextMenus.create({
     type: "normal",
     id: "child1a",
-    parentId: "parent",
-    title: "クラウドにコピー",
+    title: "クラウドにコピー (S.Q.Paste)",
     contexts: ["selection"]
   });
 
-  //子メニューを追加（２aつ目）
+  //メニューを追加（２aつ目）
   const child2a = chrome.contextMenus.create({
     type: "normal",
     id: "child2a",
-    parentId: "parent",
-    title: "クラウドのデータを貼り付け",
-    contexts: ["selection"]
-  });
-
-  //子メニューを追加（３つ目）
-  const child3 = chrome.contextMenus.create({
-    type: "separator",
-    id: "child3",
-    parentId: "parent",
-    contexts: ["all"]
+    title: "クラウドのデータを貼り付け (S.Q.Paste)",
+    contexts: ["editable"]
   });
 
 
 
 
-  //子メニューを追加（４つ目）
-  const child4 = chrome.contextMenus.create({
-    type: "checkbox",
-    id: "child4",
-    parentId: "parent",
-    title: "クラウドのデータ変更時、クリップボードに自動ダウンロード",
-    contexts: ["all"]
-  });
+
 
   
   });
 
+/* コンテキストメニューがクリックされた時の処理 */
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+    switch (info.menuItemId) {
+
+      case "child1a":
+        var selection_text = info.selectionText;
+        syncPost(selection_text);
+        break;
+  
+      case "child2a":
+        syncGet();
+        chrome.storage.sync.get(['clipboard'], function (value){
+          var clipboardContent = JSON.stringify(value.clipboard).replace('"', '').replace('"', '');
+          sendPasteToContentScript(clipboardContent);
+        });
+        break;
+    }
+        
+ 
+});
 
 
 
 
 
 
-sync();
+
+
+/* 通常処理ここまで */
 
 
 
@@ -87,15 +71,35 @@ sync();
 
 
 
-chrome.action.onClicked.addListener((tab) => {
-    chrome.scripting.executeScript({
-      target: {tabId: tab.id},
-      files: ['popup.js']
-    });
+
+
+
+
+
+
+
+
+
+function sendPasteToContentScript(toBePasted) {
+  // We first need to find the active tab and window and then send the data
+  // along. This is based on:
+  // https://developer.chrome.com/extensions/messaging
+  chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+      chrome.tabs.sendMessage(tabs[0].id, {data: toBePasted}, function(response){
+        console.log(response);
+      });
   });
+}
 
 
-async function sync() {
+
+
+
+
+
+
+
+async function syncGet() {
 
     chrome.storage.sync.get(['code1'], function (value){
         var code1 = JSON.stringify(value.code1).replace('"', '').replace('"', '');
@@ -167,7 +171,95 @@ async function sync() {
 
         });
     });
-    const _sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+/*    const _sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
     await _sleep(7000);
     sync();
+*/
+}
+
+
+
+
+
+async function syncPost(send_text) {
+
+  chrome.storage.sync.get(['code1'], function (value){
+      var code1 = JSON.stringify(value.code1).replace('"', '').replace('"', '');
+      chrome.storage.sync.get(['code2'], function (value){
+          var code2 = JSON.stringify(value.code2).replace('"', '').replace('"', '');
+
+
+          // sign_in
+          const data = 
+          {
+          "email": "easy_access@" + code1 + code2 +".com",
+          "password": "password"
+          };
+          const data2 = 
+          {
+            "insert_text": send_text
+          }
+
+          fetch('http://127.0.0.1:3000/v1/auth/sign_in', {
+          method: 'POST',
+          headers: {
+          'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+          })
+          .then(response => {
+          if(response.status!==200)
+          {
+              throw new Error(response.status)
+          }
+              var access_token = response.headers.get('access-token');
+              var client = response.headers.get('client');
+              var expiry = response.headers.get('expiry');
+
+
+              fetch('http://127.0.0.1:3000/v1/users/edit', {
+                          method: 'POST',
+                          headers: {
+                          'Accept': 'application/json',
+                          'Content-Type': 'application/json',
+                          'access-token': access_token,
+                          'uid': "easy_access@" + code1 + code2 +".com",
+                          'client': client,
+                          'expiry': expiry,
+                          'token-type': 'Bearer',
+                          },
+                          body: JSON.stringify(data2),
+                          })
+                          .then(response => {
+                              response.json().then(data => {
+                                  var clipboard = data.clipboard.text;
+                                  chrome.storage.sync.set({'clipboard': clipboard}, function(){});
+                              })
+                              chrome.storage.sync.set({'status': "OK"}, function(){});
+                          })
+                          .then(data => {
+                              console.log('Success:', data);
+                          })
+                          
+                          .catch((error) => {
+                          
+                          });
+
+
+          })
+          .then(data => {
+          console.log('Success:', data);
+          })
+          .catch((error) => {
+          chrome.storage.sync.set({'status': "NG"}, function(){});
+          });
+          
+          
+
+      });
+  });
+/*    const _sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+  await _sleep(7000);
+  sync();
+*/
 }

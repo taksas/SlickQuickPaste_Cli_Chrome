@@ -4,7 +4,7 @@
     "version": "1.0",
     "manifest_version": 3,
     "host_permissions": ["*://*/*"],
-    "permissions": ["activeTab", "scripting", "storage", "contextMenus"],
+    "permissions": ["activeTab", "scripting", "storage", "contextMenus", "clipboardRead"],
     "background": {
         "service_worker": "background.js"
       },
